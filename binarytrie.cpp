@@ -29,14 +29,14 @@ void BinaryTrieIterator::Move(char path, bool push) {
 }
 
 bool BinaryTrieIterator::IsTerminal() {
-    return current_->word_ != static_cast<uint16_t>(-1);
+    return current_->word_ != static_cast<Word::WordType>(-1);
 }
 
-uint16_t BinaryTrieIterator::GetWord() {
+Word::WordType BinaryTrieIterator::GetWord() {
     return current_->word_;
 }
 
-void BinaryTrieIterator::SetWord(uint16_t word) {
+void BinaryTrieIterator::SetWord(Word::WordType word) {
     current_->word_ = word;
 }
 
@@ -47,7 +47,7 @@ BinaryTrie::~BinaryTrie() {
     delete begin_.current_;
 }
 
-void BinaryTrie::AddWord(uint16_t word, const char* path, size_t path_len) {
+void BinaryTrie::AddWord(Word::WordType word, const char* path, size_t path_len) {
     BinaryTrieIterator it = begin_;
     for (size_t i = 0; i < path_len; ++i) {
         it.Move((path[i / 8] >> (i % 8)) & 1, true);

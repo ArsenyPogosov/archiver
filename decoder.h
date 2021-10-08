@@ -6,16 +6,12 @@
 
 class Decoder {
 private:
-    const uint16_t FILENAME_END = 256;
-    const uint16_t ONE_MORE_FILE = 257;
-    const uint16_t ARCHIVE_END = 258;
-
     bool is_done_;
     StreamWrapper in_;
     HuffmanTableCreator huffman_table_creator_;
     BinaryTrie code_table_;
 
-    uint16_t ReadWord();
+    Word::WordType ReadWord();
 
     void ReadHuffmanTable();
     void ReadName(std::string& name);

@@ -1,6 +1,8 @@
 #include "decoder.h"
 
-uint16_t Decoder::ReadWord() {
+#include "word.h"
+
+Word::WordType Decoder::ReadWord() {
     BinaryTrieIterator it = code_table_.Begin();
     while (!it.IsTerminal()) {
         char h = 0;
@@ -13,7 +15,7 @@ uint16_t Decoder::ReadWord() {
 
 void Decoder::ReadHuffmanTable() {
     size_t symbols_count = 0;
-    in_.Read(reinterpret_cast<char*>(&symbols_count), 9);
+    in_.Read(reinterpret_cast<char*>(&symbols_count), Word::WordLen);
 
     SizesTable sizes_table(symbols_count);
     for (auto& [word, _] : sizes_table) {
@@ -21,7 +23,7 @@ void Decoder::ReadHuffmanTable() {
         if (in_.Eof()) {
             throw DecoderException();
         }
-        in_.Read(reinterpret_cast<char*>(&word), 9);
+        in_.Read(reinterpret_cast<char*>(&word), Word::WordLen);
     }
 
     for (size_t i = 0, len = 1; i < symbols_count; ++len) {
@@ -29,7 +31,7 @@ void Decoder::ReadHuffmanTable() {
         if (in_.Eof()) {
             throw DecoderException();
         }
-        in_.Read(reinterpret_cast<char*>(&last), 9);
+        in_.Read(reinterpret_cast<char*>(&last), Word::WordLen);
         last += i;
 
         for (; i < last; ++i) {
@@ -46,18 +48,18 @@ void Decoder::ReadHuffmanTable() {
 
 void Decoder::ReadName(std::string& name) {
     name.clear();
-    for (uint16_t current_word = ReadWord(); current_word != FILENAME_END; current_word = ReadWord()) {
+    for (Word::WordType current_word = ReadWord(); current_word != Word::FILENAME_END; current_word = ReadWord()) {
         name += static_cast<char>(current_word);
     }
 }
 
 void Decoder::ReadContent(std::ostream& out) {
     while (true) {
-        uint16_t current_word = ReadWord();
-        if (current_word == ONE_MORE_FILE) {
+        Word::WordType current_word = ReadWord();
+        if (current_word == Word::ONE_MORE_FILE) {
             break;
         }
-        if (current_word == ARCHIVE_END) {
+        if (current_word == Word::ARCHIVE_END) {
             is_done_ = true;
             break;
         }

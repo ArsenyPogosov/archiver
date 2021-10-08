@@ -1,11 +1,13 @@
 #pragma once
 
+#include "word.h"
+
 #include <array>
 
 class BinaryTrieIterator {
 private:
     struct Node {
-        uint16_t word_;
+        Word::WordType word_;
         std::array<Node*, 2> links_;
 
         Node();
@@ -18,8 +20,8 @@ private:
 public:
     void Move(char path, bool push = false);
     bool IsTerminal();
-    uint16_t GetWord();
-    void SetWord(uint16_t word);
+    Word::WordType GetWord();
+    void SetWord(Word::WordType word);
 
     friend class BinaryTrie;
 };
@@ -32,7 +34,7 @@ public:
     BinaryTrie();
     ~BinaryTrie();
 
-    void AddWord(uint16_t word, const char* path, size_t path_len);
+    void AddWord(Word::WordType word, const char* path, size_t path_len);
     BinaryTrieIterator Begin();
 
     void Clear();

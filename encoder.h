@@ -5,10 +5,6 @@
 
 class Encoder {
 private:
-    const uint16_t FILENAME_END = 256;
-    const uint16_t ONE_MORE_FILE = 257;
-    const uint16_t ARCHIVE_END = 258;
-
     bool empty_;
     StreamWrapper out_;
     HuffmanTableCreator huffman_table_creator_;
@@ -16,7 +12,7 @@ private:
 
     void ConfigureHuffmanTable(std::istream& in, const std::string& name);
 
-    void WriteWord(uint16_t word);
+    void WriteWord(Word::WordType word);
 
     void WriteHuffmanTable();
     void WriteName(const std::string& name);

@@ -1,18 +1,20 @@
 #include "encoder.h"
 
+#include "word.h"
+
 #include <numeric>
 #include <algorithm>
 
 void Encoder::ConfigureHuffmanTable(std::istream& in, const std::string& name = "") {
-    std::unordered_map<uint16_t, int> count;
+    std::unordered_map<Word::WordType, int> count;
 
-    count[FILENAME_END] = count[ONE_MORE_FILE] = count[ARCHIVE_END] = 1;
+    count[Word::FILENAME_END] = count[Word::ONE_MORE_FILE] = count[Word::ARCHIVE_END] = 1;
     for (const auto& i : name) {
-        ++count[static_cast<uint16_t>(i)];
+        ++count[static_cast<Word::WordType>(i)];
     }
     char word;
     while (in.get(word)) {
-        ++count[static_cast<uint16_t>(word)];
+        ++count[static_cast<Word::WordType>(word)];
     }
 
     FrequencyTable frequency_table;
@@ -26,22 +28,22 @@ void Encoder::ConfigureHuffmanTable(std::istream& in, const std::string& name = 
     in.seekg(0);
 }
 
-void Encoder::WriteWord(uint16_t word) {
+void Encoder::WriteWord(Word::WordType word) {
     out_.Write(huffman_table_[word].first.data(), huffman_table_[word].second);
 }
 
 void Encoder::WriteHuffmanTable() {
     size_t symbols_count = huffman_table_.size();
-    out_.Write(reinterpret_cast<char*>(&symbols_count), 9);
+    out_.Write(reinterpret_cast<char*>(&symbols_count), Word::WordLen);
 
-    std::vector<std::pair<size_t, uint16_t>> canonical_order;
+    std::vector<std::pair<size_t, Word::WordType>> canonical_order;
     canonical_order.reserve(symbols_count);
     for (const auto& [word, data] : huffman_table_) {
         canonical_order.emplace_back(data.second, word);
     }
     std::sort(canonical_order.begin(), canonical_order.end());
     for (const auto& [_, word] : canonical_order) {
-        out_.Write(reinterpret_cast<const char*>(&word), 9);
+        out_.Write(reinterpret_cast<const char*>(&word), Word::WordLen);
     }
 
     size_t max_size = canonical_order.back().first;
@@ -50,21 +52,21 @@ void Encoder::WriteHuffmanTable() {
         ++count_size[size - 1];
     }
     for (const auto& i : count_size) {
-        out_.Write(reinterpret_cast<const char*>(&i), 9);
+        out_.Write(reinterpret_cast<const char*>(&i), Word::WordLen);
     }
 }
 
 void Encoder::WriteName(const std::string& name) {
     for (const auto& i : name) {
-        WriteWord(static_cast<uint16_t>(i));
+        WriteWord(static_cast<Word::WordType>(i));
     }
-    WriteWord(FILENAME_END);
+    WriteWord(Word::FILENAME_END);
 }
 
 void Encoder::WriteContent(std::istream& in) {
     char word;
     while (in.get(word)) {
-        WriteWord(static_cast<uint16_t>(word));
+        WriteWord(static_cast<Word::WordType>(word));
     }
 }
 
@@ -77,7 +79,7 @@ void Encoder::Start(std::ostream& out) {
 }
 
 void Encoder::Stop() {
-    WriteWord(ARCHIVE_END);
+    WriteWord(Word::ARCHIVE_END);
     out_.Flush();
 }
 
@@ -85,7 +87,7 @@ void Encoder::Add(std::istream& in, const std::string& name = "") {
     if (empty_) {
         empty_ = false;
     } else {
-        WriteWord(ONE_MORE_FILE);
+        WriteWord(Word::ONE_MORE_FILE);
     }
 
     try {

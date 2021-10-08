@@ -1,4 +1,6 @@
 #include "huffmantable.h"
+
+#include "word.h"
 #include "priorityqueue.h"
 
 #include <algorithm>
@@ -13,10 +15,10 @@ SizesTable HuffmanTableCreator::CountSizes(const FrequencyTable& frequency_table
 
     struct Node {
         int weight_;
-        uint16_t min_word_;
+        Word::WordType min_word_;
         size_t parent_;
 
-        Node(int weight = 0, uint16_t min_word = 0, size_t parent = -1) {
+        Node(int weight = 0, Word::WordType min_word = 0, size_t parent = -1) {
             weight_ = weight;
             min_word_ = min_word;
             parent_ = parent;
@@ -26,12 +28,12 @@ SizesTable HuffmanTableCreator::CountSizes(const FrequencyTable& frequency_table
     std::vector<Node> huffman_nodes;
     huffman_nodes.reserve(n * 2 - 1);
 
-    PriorityQueue<std::pair<std::pair<int, uint16_t>, size_t>> low_weight_first;
+    PriorityQueue<std::pair<std::pair<int, Word::WordType>, size_t>> low_weight_first;
 
-    const auto add_node = [&](int weight = 0, uint16_t min_word, size_t l = -1, size_t r = -1) {
+    const auto add_node = [&](int weight, Word::WordType min_word, size_t l = -1, size_t r = -1) {
         size_t it = huffman_nodes.size();
         huffman_nodes.emplace_back(weight);
-        low_weight_first.Push({std::pair<int, uint16_t>{weight, min_word}, it});
+        low_weight_first.Push({std::pair<int, Word::WordType>{weight, min_word}, it});
         if (l != static_cast<size_t>(-1)) {
             huffman_nodes[l].parent_ = it;
         }
@@ -59,7 +61,7 @@ SizesTable HuffmanTableCreator::CountSizes(const FrequencyTable& frequency_table
         sizes[i] = sizes[huffman_nodes[i].parent_] + 1;
     }
 
-    std::vector<std::pair<uint16_t, size_t>> result;
+    std::vector<std::pair<Word::WordType, size_t>> result;
     {
         size_t i = 0;
         for (const auto& [word, _] : frequency_table) {
@@ -76,7 +78,7 @@ HuffmanTable HuffmanTableCreator::CreateFromSizes(SizesTable sizes_table) {
         return HuffmanTable();
     }
 
-    std::sort(sizes_table.begin(), sizes_table.end(), [](std::pair<uint16_t, size_t> a, std::pair<uint16_t, size_t> b) {
+    std::sort(sizes_table.begin(), sizes_table.end(), [](std::pair<Word::WordType, size_t> a, std::pair<Word::WordType, size_t> b) {
         return std::tie(a.second, a.first) < std::tie(b.second, b.first);
     });
 

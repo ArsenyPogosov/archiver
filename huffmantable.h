@@ -1,11 +1,14 @@
 #pragma once
 
+#include "word.h"
+
 #include <unordered_map>
 #include <vector>
 
-using HuffmanTable = std::unordered_map<uint16_t, std::pair<std::vector<char>, size_t>>;
-using FrequencyTable = std::vector<std::pair<uint16_t, int>>;
-using SizesTable = std::vector<std::pair<uint16_t, size_t>>;
+
+using HuffmanTable = std::unordered_map<Word::WordType, std::pair<std::vector<char>, size_t>>;
+using FrequencyTable = std::vector<std::pair<Word::WordType, int>>;
+using SizesTable = std::vector<std::pair<Word::WordType, size_t>>;
 
 class HuffmanTableCreator {
 private:
