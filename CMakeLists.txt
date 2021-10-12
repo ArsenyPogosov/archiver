@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.13)
 project(archiver)
 
+set(CMAKE_MODULE_PATH              "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_EXPORT_COMPILE_COMMANDS  ON)
+
+include(cmake/BuildFlags.cmake)
+include(cmake/TestSolution.cmake)
+
+find_package(Catch REQUIRED)
+
+include_directories(util)
+
 set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 add_executable(archiver main.cpp streamwrapper.cpp huffmantable.h huffmantable.cpp encoder.cpp encoder.h decoder.h decoder.cpp binarytrie.h binarytrie.cpp archiver.h archiver.cpp priorityqueue.tcc priorityqueue.h)
