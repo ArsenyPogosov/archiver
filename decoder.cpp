@@ -40,7 +40,7 @@ void Decoder::ReadHuffmanTable() {
     size_t symbols_count = 0;
     in_.Read(reinterpret_cast<char*>(&symbols_count), Word::WordLen);
 
-    SizesTable sizes_table(symbols_count);
+    Huffman::SizesTable sizes_table(symbols_count);
     for (auto& [word, _] : sizes_table) {
         word = 0;
         if (in_.Eof()) {
@@ -63,7 +63,7 @@ void Decoder::ReadHuffmanTable() {
     }
 
     code_table_.Clear();
-    HuffmanTable huffman_table = huffman_table_creator_.CreateFromSizes(sizes_table);
+    Huffman::HuffmanTable huffman_table = Huffman::CreateFromSizes(sizes_table);
     for (const auto& [word, code] : huffman_table) {
         code_table_.AddWord(word, code.first.data(), code.second);
     }

@@ -21,8 +21,7 @@ public:
 private:
     bool empty_;
     StreamWrapper out_;
-    HuffmanTableCreator huffman_table_creator_;
-    HuffmanTable huffman_table_;
+    Huffman::HuffmanTable huffman_table_;
 
     void ConfigureHuffmanTable(std::istream& in, const std::string& name = "");
 

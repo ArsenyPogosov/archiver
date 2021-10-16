@@ -21,7 +21,6 @@ public:
 private:
     bool is_done_;
     StreamWrapper in_;
-    HuffmanTableCreator huffman_table_creator_;
     BinaryTrie code_table_;
 
     Word::WordType ReadWord();

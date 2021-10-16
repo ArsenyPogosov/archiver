@@ -15,6 +15,12 @@ public:
 
 private:
     std::iostream* stream_;
+	std::iostream& GetStream() {
+		return *stream_;
+	}
+	const std::iostream& GetStream() const {
+		return *stream_;
+	}
 
     char buffer_;
     uint_fast8_t buffer_len_;

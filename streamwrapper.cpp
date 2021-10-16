@@ -38,15 +38,15 @@ void StreamWrapper::Flush() {
 }
 
 bool StreamWrapper::Eof() const {
-	return stream_->eof();
+	return GetStream().eof();
 }
 
 void StreamWrapper::ReadBuffer() {
-    stream_->read(&buffer_, 1);
+	GetStream().read(&buffer_, 1);
     buffer_len_ = 8;
 }
 
 void StreamWrapper::WriteBuffer() {
-    stream_->write(&buffer_, 1);
+	GetStream().write(&buffer_, 1);
     buffer_len_ = 0;
 }

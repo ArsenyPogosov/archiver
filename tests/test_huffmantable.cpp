@@ -25,7 +25,7 @@ TEST_CASE("Create from sizes") {
     tests[3].second[4] = {{static_cast<char>(0b01000111)}, 8};
     tests[3].second[5] = {{static_cast<char>(0b11000111), static_cast<char>(0b00000000)}, 9};
 
-    HuffmanTableCreator huffman;
+    Huffman huffman;
 
     for (const auto& [test, right_result] : tests) {
         REQUIRE(right_result == huffman.CreateFromSizes(test));
@@ -55,7 +55,7 @@ TEST_CASE("Create from frequency") {
     tests[3].second[4] = {{static_cast<char>(0b00000011)}, 3};
     tests[3].second[5] = {{static_cast<char>(0b00000001)}, 2};
 
-    HuffmanTableCreator huffman;
+    Huffman huffman;
 
     for (const auto& [test, right_result] : tests) {
         auto res = huffman.CreateFromFrequency(test);

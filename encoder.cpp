@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-Encoder::Encoder() : empty_(false), out_(nullptr), huffman_table_creator_() {
+Encoder::Encoder() : empty_(false), out_(nullptr) {
 }
 
 void Encoder::Start(std::ostream& out) {
@@ -46,12 +46,12 @@ void Encoder::ConfigureHuffmanTable(std::istream& in, const std::string& name) {
         ++count[static_cast<Word::WordType>(word)];
     }
 
-    FrequencyTable frequency_table;
+    Huffman::FrequencyTable frequency_table;
     for (const auto& i : count) {
         frequency_table.push_back(i);
     }
 
-    huffman_table_ = huffman_table_creator_.CreateFromFrequency(frequency_table);
+    huffman_table_ = Huffman::CreateFromFrequency(frequency_table);
 
     in.clear();
     in.seekg(0);
