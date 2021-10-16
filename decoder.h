@@ -1,10 +1,23 @@
 #pragma once
 
-#include "streamwrapper.h"
-#include "huffmantable.h"
 #include "binarytrie.h"
+#include "huffmantable.h"
+#include "streamwrapper.h"
 
 class Decoder {
+public:
+	class DecoderException : public std::exception {
+		[[nodiscard]] const char* what() const noexcept override {
+			return "Decoder failed";
+		}
+	};
+
+	Decoder();
+
+	void Start(std::istream& in);
+	void Get(std::ostream& out, std::string& name);
+	[[nodiscard]] bool IsDone() const;
+
 private:
     bool is_done_;
     StreamWrapper in_;
@@ -16,17 +29,4 @@ private:
     void ReadHuffmanTable();
     void ReadName(std::string& name);
     void ReadContent(std::ostream& out);
-
-public:
-    class DecoderException : public std::exception {
-        const char* what() const throw() {
-            return "Decoder failed";
-        }
-    };
-
-    Decoder();
-
-    void Start(std::istream& in);
-    void Get(std::ostream& out, std::string& name);
-    bool IsDone();
 };

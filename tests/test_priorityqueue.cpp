@@ -1,4 +1,5 @@
 #include <catch.hpp>
+
 #include "priorityqueue.h"
 
 TEST_CASE("PriorityQueue") {

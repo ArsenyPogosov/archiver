@@ -1,9 +1,32 @@
 #include "decoder.h"
 
-#include "word.h"
+Decoder::Decoder() : in_(nullptr) {
+	is_done_ = true;
+}
+
+void Decoder::Start(std::istream& in) {
+	in_ = StreamWrapper(static_cast<std::iostream*>(&in));
+	is_done_ = false;
+}
+
+void Decoder::Get(std::ostream& out, std::string& name) {
+	try {
+		ReadHuffmanTable();
+		ReadName(name);
+		ReadContent(out);
+	} catch (const std::iostream::failure& e) {
+		throw;
+	} catch (...) {
+		throw DecoderException();
+	}
+}
+
+bool Decoder::IsDone() const {
+	return is_done_;
+}
 
 Word::WordType Decoder::ReadWord() {
-    BinaryTrieIterator it = code_table_.Begin();
+    BinaryTrieSmartNode it = code_table_.Begin();
     while (!it.IsTerminal()) {
         char h = 0;
         in_.Read(&h, 1);
@@ -66,28 +89,4 @@ void Decoder::ReadContent(std::ostream& out) {
 
         out.write(reinterpret_cast<char*>(&current_word), 1);
     }
-}
-
-Decoder::Decoder() : in_(nullptr) {
-}
-
-void Decoder::Start(std::istream& in) {
-    in_ = StreamWrapper(static_cast<std::iostream*>(&in));
-    is_done_ = false;
-}
-
-void Decoder::Get(std::ostream& out, std::string& name) {
-    try {
-        ReadHuffmanTable();
-        ReadName(name);
-        ReadContent(out);
-    } catch (const std::iostream::failure& e) {
-        throw;
-    } catch (...) {
-        throw DecoderException();
-    }
-}
-
-bool Decoder::IsDone() {
-    return is_done_;
 }

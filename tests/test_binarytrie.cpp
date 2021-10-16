@@ -1,4 +1,5 @@
 #include <catch.hpp>
+
 #include "binarytrie.h"
 
 TEST_CASE("BinaryTrie") {
@@ -13,7 +14,7 @@ TEST_CASE("BinaryTrie") {
     }
 
     for (const auto& [word, code] : words) {
-        BinaryTrieIterator it = trie.Begin();
+        BinaryTrieSmartNode it = trie.Begin();
         for (size_t i = 0; i < code.second; ++i) {
             it.Move((code.first[i / 8] >> (i % 8) & 1));
         }

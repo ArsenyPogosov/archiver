@@ -1,11 +1,40 @@
 #include "encoder.h"
 
-#include "word.h"
-
-#include <numeric>
 #include <algorithm>
 
-void Encoder::ConfigureHuffmanTable(std::istream& in, const std::string& name = "") {
+Encoder::Encoder() : empty_(false), out_(nullptr), huffman_table_creator_() {
+}
+
+void Encoder::Start(std::ostream& out) {
+	out_ = StreamWrapper(static_cast<std::iostream*>(&out));
+	empty_ = true;
+}
+
+void Encoder::Stop() {
+	WriteWord(Word::ARCHIVE_END);
+	out_.Flush();
+}
+
+void Encoder::Add(std::istream& in, const std::string& name) {
+	if (empty_) {
+		empty_ = false;
+	} else {
+		WriteWord(Word::ONE_MORE_FILE);
+	}
+
+	try {
+		ConfigureHuffmanTable(in, name);
+		WriteHuffmanTable();
+		WriteName(name);
+		WriteContent(in);
+	} catch (const std::iostream::failure& e) {
+		throw;
+	} catch (...) {
+		throw EncoderException();
+	}
+}
+
+void Encoder::ConfigureHuffmanTable(std::istream& in, const std::string& name) {
     std::unordered_map<Word::WordType, int> count;
 
     count[Word::FILENAME_END] = count[Word::ONE_MORE_FILE] = count[Word::ARCHIVE_END] = 1;
@@ -67,37 +96,5 @@ void Encoder::WriteContent(std::istream& in) {
     char word;
     while (in.get(word)) {
         WriteWord(static_cast<Word::WordType>(word));
-    }
-}
-
-Encoder::Encoder() : empty_(false), out_(nullptr), huffman_table_creator_() {
-}
-
-void Encoder::Start(std::ostream& out) {
-    out_ = StreamWrapper(static_cast<std::iostream*>(&out));
-    empty_ = true;
-}
-
-void Encoder::Stop() {
-    WriteWord(Word::ARCHIVE_END);
-    out_.Flush();
-}
-
-void Encoder::Add(std::istream& in, const std::string& name = "") {
-    if (empty_) {
-        empty_ = false;
-    } else {
-        WriteWord(Word::ONE_MORE_FILE);
-    }
-
-    try {
-        ConfigureHuffmanTable(in, name);
-        WriteHuffmanTable();
-        WriteName(name);
-        WriteContent(in);
-    } catch (const std::iostream::failure& e) {
-        throw;
-    } catch (...) {
-        throw EncoderException();
     }
 }

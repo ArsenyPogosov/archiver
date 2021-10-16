@@ -1,6 +1,7 @@
 #include <catch.hpp>
-#include "encoder.h"
+
 #include "decoder.h"
+#include "encoder.h"
 
 #include <sstream>
 

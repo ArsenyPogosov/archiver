@@ -1,9 +1,9 @@
 #pragma once
 
-#include "encoder.h"
-#include "decoder.h"
-
 #include <string>
+
+#include "decoder.h"
+#include "encoder.h"
 
 class Archiver {
 private:

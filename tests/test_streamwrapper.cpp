@@ -1,4 +1,5 @@
 #include <catch.hpp>
+
 #include "streamwrapper.h"
 
 #include <sstream>

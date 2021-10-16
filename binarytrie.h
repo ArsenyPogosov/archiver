@@ -1,41 +1,44 @@
 #pragma once
 
-#include "word.h"
-
 #include <array>
 
-class BinaryTrieIterator {
-private:
-    struct Node {
-        Word::WordType word_;
-        std::array<Node*, 2> links_;
+#include "word.h"
 
-        Node();
-        ~Node();
-    };
+struct Node {
+	Word::WordType word_;
+	std::array<Node*, 2> links_;
+
+	Node();
+	~Node();
+};
+
+class BinaryTrieSmartNode {
+public:
+	void Move(char path, bool push = false);
+	bool IsTerminal();
+	Word::WordType GetWord();
+	void SetWord(Word::WordType word);
+
+private:
 
     Node* current_;
-    BinaryTrieIterator(Node* current);
+    explicit BinaryTrieSmartNode(Node* current);
 
-public:
-    void Move(char path, bool push = false);
-    bool IsTerminal();
-    Word::WordType GetWord();
-    void SetWord(Word::WordType word);
-
-    friend class BinaryTrie;
+	friend class BinaryTrie;
 };
 
 class BinaryTrie {
-private:
-    BinaryTrieIterator begin_;
-
 public:
-    BinaryTrie();
-    ~BinaryTrie();
+	static const Word::WordType NOT_TERMINAL_ = -1;
 
-    void AddWord(Word::WordType word, const char* path, size_t path_len);
-    BinaryTrieIterator Begin();
+	BinaryTrie();
+	~BinaryTrie();
 
-    void Clear();
+	void AddWord(Word::WordType word, const char* path, size_t path_len);
+	BinaryTrieSmartNode Begin();
+
+	void Clear();
+
+private:
+    BinaryTrieSmartNode begin_;
 };

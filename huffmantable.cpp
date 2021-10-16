@@ -1,81 +1,13 @@
 #include "huffmantable.h"
 
-#include "word.h"
-#include "priorityqueue.h"
-
 #include <algorithm>
 #include <cstring>
 
-SizesTable HuffmanTableCreator::CountSizes(const FrequencyTable& frequency_table) {
-    if (frequency_table.empty()) {
-        return SizesTable();
-    }
-
-    size_t n = frequency_table.size();
-
-    struct Node {
-        int weight_;
-        Word::WordType min_word_;
-        size_t parent_;
-
-        Node(int weight = 0, Word::WordType min_word = 0, size_t parent = -1) {
-            weight_ = weight;
-            min_word_ = min_word;
-            parent_ = parent;
-        };
-    };
-
-    std::vector<Node> huffman_nodes;
-    huffman_nodes.reserve(n * 2 - 1);
-
-    PriorityQueue<std::pair<std::pair<int, Word::WordType>, size_t>> low_weight_first;
-
-    const auto add_node = [&](int weight, Word::WordType min_word, size_t l = -1, size_t r = -1) {
-        size_t it = huffman_nodes.size();
-        huffman_nodes.emplace_back(weight);
-        low_weight_first.Push({std::pair<int, Word::WordType>{weight, min_word}, it});
-        if (l != static_cast<size_t>(-1)) {
-            huffman_nodes[l].parent_ = it;
-        }
-        if (r != static_cast<size_t>(-1)) {
-            huffman_nodes[r].parent_ = it;
-        }
-    };
-
-    for (auto& [word, frequency] : frequency_table) {
-        add_node(frequency, word);
-    }
-
-    while (low_weight_first.Size() > 1) {
-        size_t first = low_weight_first.Top().second;
-        low_weight_first.Pop();
-        size_t second = low_weight_first.Top().second;
-        low_weight_first.Pop();
-
-        add_node(huffman_nodes[first].weight_ + huffman_nodes[second].weight_,
-                 std::min(huffman_nodes[first].min_word_, huffman_nodes[second].min_word_), first, second);
-    }
-
-    std::vector<size_t> sizes(n * 2 - 1);
-    for (int i = n * 2 - 3; i >= 0; --i) {
-        sizes[i] = sizes[huffman_nodes[i].parent_] + 1;
-    }
-
-    std::vector<std::pair<Word::WordType, size_t>> result;
-    {
-        size_t i = 0;
-        for (const auto& [word, _] : frequency_table) {
-            result.emplace_back(word, sizes[i]);
-            ++i;
-        }
-    }
-
-    return result;
-}
+#include "priorityqueue.h"
 
 HuffmanTable HuffmanTableCreator::CreateFromSizes(SizesTable sizes_table) {
     if (sizes_table.empty()) {
-        return HuffmanTable();
+        return {};
     }
 
     std::sort(sizes_table.begin(), sizes_table.end(), [](std::pair<Word::WordType, size_t> a, std::pair<Word::WordType, size_t> b) {
@@ -112,4 +44,71 @@ HuffmanTable HuffmanTableCreator::CreateFromSizes(SizesTable sizes_table) {
 
 HuffmanTable HuffmanTableCreator::CreateFromFrequency(const FrequencyTable& frequency_table) {
     return CreateFromSizes(CountSizes(frequency_table));
+}
+
+SizesTable HuffmanTableCreator::CountSizes(const FrequencyTable& frequency_table) {
+	if (frequency_table.empty()) {
+		return {};
+	}
+
+	size_t n = frequency_table.size();
+
+	struct Node {
+		int weight_;
+		Word::WordType min_word_;
+		size_t parent_;
+
+		explicit Node(int weight = 0, Word::WordType min_word = 0, size_t parent = -1) {
+			weight_ = weight;
+			min_word_ = min_word;
+			parent_ = parent;
+		};
+	};
+
+	std::vector<Node> huffman_nodes;
+	huffman_nodes.reserve(n * 2 - 1);
+
+	PriorityQueue<std::pair<std::pair<int, Word::WordType>, size_t>> low_weight_first;
+
+	const auto add_node = [&](int weight, Word::WordType min_word, size_t l = -1, size_t r = -1) {
+		size_t it = huffman_nodes.size();
+		huffman_nodes.emplace_back(weight);
+		low_weight_first.Push({std::pair<int, Word::WordType>{weight, min_word}, it});
+		if (l != static_cast<size_t>(-1)) {
+			huffman_nodes[l].parent_ = it;
+		}
+		if (r != static_cast<size_t>(-1)) {
+			huffman_nodes[r].parent_ = it;
+		}
+	};
+
+	for (auto& [word, frequency] : frequency_table) {
+		add_node(frequency, word);
+	}
+
+	while (low_weight_first.Size() > 1) {
+		size_t first = low_weight_first.Top().second;
+		low_weight_first.Pop();
+		size_t second = low_weight_first.Top().second;
+		low_weight_first.Pop();
+
+		add_node(huffman_nodes[first].weight_ + huffman_nodes[second].weight_,
+		         std::min(huffman_nodes[first].min_word_, huffman_nodes[second].min_word_), first, second);
+	}
+
+	std::vector<size_t> sizes(n * 2 - 1);
+	for (int i = n * 2 - 3; i >= 0; --i) {
+		sizes[i] = sizes[huffman_nodes[i].parent_] + 1;
+	}
+
+	std::vector<std::pair<Word::WordType, size_t>> result;
+	{
+		size_t i = 0;
+		for (const auto& [word, _] : frequency_table) {
+			result.emplace_back(word, sizes[i]);
+			++i;
+		}
+	}
+
+	return result;
 }
