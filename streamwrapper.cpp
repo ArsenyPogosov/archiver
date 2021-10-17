@@ -1,11 +1,11 @@
 #include "streamwrapper.h"
 
-StreamWrapper::StreamWrapper(std::iostream *stream) {
+StreamWrapper::StreamWrapper(std::iostream* stream) {
 	stream_ = stream;
 	buffer_ = buffer_len_ = 0;
 }
 
-void StreamWrapper::Read(char *result, size_t n) {
+void StreamWrapper::Read(char* result, size_t n) {
 	for (size_t i = 0; i < n; ++i) {
 		if (!buffer_len_) {
 			ReadBuffer();
@@ -17,7 +17,7 @@ void StreamWrapper::Read(char *result, size_t n) {
 	}
 }
 
-void StreamWrapper::Write(const char *data, size_t n) {
+void StreamWrapper::Write(const char* data, size_t n) {
 	for (size_t i = 0; i < n; ++i) {
 		if (buffer_len_ == 8) {
 			WriteBuffer();

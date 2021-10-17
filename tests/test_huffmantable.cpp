@@ -3,7 +3,7 @@
 #include "huffmantable.h"
 
 TEST_CASE("Create from sizes") {
-    std::vector<std::pair<SizesTable, HuffmanTable>> tests(4);
+    std::vector<std::pair<Huffman::SizesTable, Huffman::HuffmanTable>> tests(4);
     tests[0].first = {};
 
     tests[1].first = {{3, 1}, {4, 2}, {5, 2}};
@@ -25,15 +25,13 @@ TEST_CASE("Create from sizes") {
     tests[3].second[4] = {{static_cast<char>(0b01000111)}, 8};
     tests[3].second[5] = {{static_cast<char>(0b11000111), static_cast<char>(0b00000000)}, 9};
 
-    Huffman huffman;
-
     for (const auto& [test, right_result] : tests) {
-        REQUIRE(right_result == huffman.CreateFromSizes(test));
+        REQUIRE(right_result == Huffman::CreateFromSizes(test));
     }
 }
 
 TEST_CASE("Create from frequency") {
-    std::vector<std::pair<FrequencyTable, HuffmanTable>> tests(4);
+    std::vector<std::pair<Huffman::FrequencyTable, Huffman::HuffmanTable>> tests(4);
     tests[0].first = {};
 
     tests[1].first = {{3, 1}, {4, 2}, {5, 5}};
@@ -55,10 +53,8 @@ TEST_CASE("Create from frequency") {
     tests[3].second[4] = {{static_cast<char>(0b00000011)}, 3};
     tests[3].second[5] = {{static_cast<char>(0b00000001)}, 2};
 
-    Huffman huffman;
-
     for (const auto& [test, right_result] : tests) {
-        auto res = huffman.CreateFromFrequency(test);
-        REQUIRE(right_result == huffman.CreateFromFrequency(test));
+        auto res = Huffman::CreateFromFrequency(test);
+        REQUIRE(right_result == Huffman::CreateFromFrequency(test));
     }
 }

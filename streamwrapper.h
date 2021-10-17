@@ -18,7 +18,7 @@ private:
 	std::iostream& GetStream() {
 		return *stream_;
 	}
-	const std::iostream& GetStream() const {
+	[[nodiscard]] const std::iostream& GetStream() const {
 		return *stream_;
 	}
 

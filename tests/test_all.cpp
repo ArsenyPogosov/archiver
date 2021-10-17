@@ -1,3 +1,4 @@
+#include "test_argumentsparser.cpp"
 #include "test_binarytrie.cpp"
 #include "test_encoder_decoder.cpp"
 #include "test_huffmantable.cpp"
