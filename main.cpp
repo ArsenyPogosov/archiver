@@ -1,42 +1,49 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "archiver.h"
+#include "argumentsparser.h"
+#include "decoder.h"
+#include "encoder.h"
+#include "helper.h"
+#include "unarchiver.h"
 
 int main(int argc, char* argv[]) {
-    Archiver archiver(&std::cout);
 
-    if (argc <= 1) {
-        return 0;
-    }
+	ArgumentParser parser;
 
-    if (argv[1] == std::string("-c")) {
-        if (argc <= 2) {
-            std::cout << "archive_name is required.\n";
-            return 0;
-        }
-        if (argc <= 3) {
-            std::cout << "file1 is required.\n";
-            return 0;
-        }
+	parser.AddPattern({"?", "-c", ".", "*"}, [](std::vector<std::string> args) {
+		std::string archive_name = args.front();
+		args.erase(args.begin());
+		try {
+			Archiver::Archive(archive_name, args);
+		} catch (const std::iostream::failure& e) {
+			std::cout << "Unable to read/write to file.";
+		} catch (const Encoder::EncoderException& e) {
+			std::cout << "Fail to encode.";
+		}
+	});
 
-        std::vector<std::string> file_names;
-        for (size_t i = 3; i < static_cast<size_t>(argc); ++i) {
-            file_names.push_back(argv[i]);
-        }
-        archiver.Archive(argv[2], file_names);
+	parser.AddPattern({"?", "-d", "."}, [](std::vector<std::string> args) {
+		try {
+			Unarchiver::Unarchive(args[0]);
+		} catch (const std::iostream::failure &e) {
+			std::cout << "Can't read/write to file.";
+		} catch (const Decoder::DecoderException &e) {
+			std::cout << "Fail to decode. Archive has probably been corrupted.";
+		}
+	});
 
-    } else if (argv[1] == std::string("-d")) {
-        if (argc <= 2) {
-            std::cout << "archive_name is required\n";
-            return 0;
-        }
-        archiver.Unarchive(argv[2]);
+	parser.AddPattern({"?", "-h"}, [](std::vector<std::string> args) {
+		Helper::Help(std::cout);
+	});
 
-    } else if (argv[1] == std::string("-h")) {
-        archiver.WriteHelp();
+	parser.SetDefault([](std::vector<std::string> args) {
+		Helper::Help(std::cout);
+	});
 
-    } else {
-        std::cout << "This is not a command command. Use -h for help.\n";
-        return 0;
-    }
+	parser.Execute(argc, argv);
 
     return 0;
 }

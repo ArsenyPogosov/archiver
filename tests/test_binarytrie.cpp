@@ -1,5 +1,7 @@
 #include <catch.hpp>
 
+#include <vector>
+
 #include "binarytrie.h"
 
 TEST_CASE("BinaryTrie") {

@@ -1,5 +1,8 @@
 #include "argumentsparser.h"
 
+#include "string"
+#include "vector"
+
 void ArgumentParser::AddPattern(const std::vector<std::string> &pattern_template, const Action &action) {
 	patterns_.emplace_back(pattern_template, action);
 }
@@ -14,7 +17,7 @@ void ArgumentParser::SetDefault(const Action& default_action) {
 	default_ = default_action;
 }
 
-void ArgumentParser::Execute(int argc, char** argv) {
+void ArgumentParser::Execute(int argc, char** argv) const {
 	std::vector<std::string> arguments(argc);
 	for (int i = 0; i < argc; ++i) {
 		arguments[i] = std::string(argv[i]);
@@ -24,23 +27,27 @@ void ArgumentParser::Execute(int argc, char** argv) {
 		std::vector<std::string> needed_arguments;
 
 		bool matched = true;
-		for (size_t i = 0; i < pattern.pattern_template_.size(); ++i) {
+		for (size_t i = 0, j = 0; i < pattern.pattern_template_.size(); ++i, ++j) {
 			if (pattern.pattern_template_[i] == ARGUMENTS_PACK_) {
-				std::copy(arguments.begin() + i, arguments.end(), std::back_inserter(needed_arguments));
+				std::copy(arguments.begin() + j, arguments.end(), std::back_inserter(needed_arguments));
 				break;
 			}
 
-			if (i >= arguments.size()) {
+			if (j >= arguments.size()) {
 				matched = false;
 				break;
 			}
 
-			if (pattern.pattern_template_[i] == ARGUMENT_) {
-				needed_arguments.push_back(arguments[i]);
+			if (pattern.pattern_template_[i] == SKIP_) {
 				continue;
 			}
 
-			if (arguments[i] != pattern.pattern_template_[i]) {
+			if (pattern.pattern_template_[i] == ARGUMENT_) {
+				needed_arguments.push_back(arguments[j]);
+				continue;
+			}
+
+			if (pattern.pattern_template_[i] != arguments[j]) {
 				matched = false;
 				break;
 			}

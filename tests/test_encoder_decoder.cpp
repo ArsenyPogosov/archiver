@@ -1,9 +1,11 @@
 #include <catch.hpp>
 
+#include <sstream>
+#include <string>
+#include <vector>
+
 #include "decoder.h"
 #include "encoder.h"
-
-#include <sstream>
 
 TEST_CASE("Encoder and Decoder") {
     std::vector<std::vector<std::pair<std::string, std::string>>> tests{

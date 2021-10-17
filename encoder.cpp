@@ -1,6 +1,9 @@
 #include "encoder.h"
 
 #include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
 
 Encoder::Encoder() : empty_(false), out_(nullptr) {
 }

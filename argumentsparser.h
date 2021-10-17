@@ -1,8 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
-#include <functional>
 
 class ArgumentsParserException: public std::exception {
 
@@ -10,7 +10,7 @@ class ArgumentsParserException: public std::exception {
 
 class ArgumentParser {
 public:
-	using Action = std::function<void(const std::vector<std::string>&)>;
+	using Action = std::function<void(std::vector<std::string>&)>;
 
 	ArgumentParser();
 
@@ -18,11 +18,12 @@ public:
 
 	void SetDefault(const Action& default_action);
 
-	void Execute(int argc, char** argv);
+	void Execute(int argc, char** argv) const;
 
 private:
 	inline static const std::string ARGUMENT_ = ".";
 	inline static const std::string ARGUMENTS_PACK_ = "*";
+	inline static const std::string SKIP_ = "?";
 
 	struct Pattern {
 	public:

@@ -1,5 +1,7 @@
 #include "streamwrapper.h"
 
+#include <iostream>
+
 StreamWrapper::StreamWrapper(std::iostream* stream) {
 	stream_ = stream;
 	buffer_ = buffer_len_ = 0;

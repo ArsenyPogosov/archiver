@@ -1,5 +1,9 @@
 #pragma once
 
+#include <exception>
+#include <iostream>
+#include <string>
+
 #include "binarytrie.h"
 #include "huffmantable.h"
 #include "streamwrapper.h"

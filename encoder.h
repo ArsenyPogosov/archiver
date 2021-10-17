@@ -1,5 +1,7 @@
 #pragma once
 
+#include <exception>
+
 #include "huffmantable.h"
 #include "streamwrapper.h"
 

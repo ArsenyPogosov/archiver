@@ -1,7 +1,9 @@
 #include "huffmantable.h"
 
-#include <algorithm>
 #include <cstring>
+
+#include <algorithm>
+#include <vector>
 
 #include "priorityqueue.h"
 

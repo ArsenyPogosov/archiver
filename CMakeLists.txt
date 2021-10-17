@@ -16,33 +16,33 @@ include_directories(util)
 set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 add_executable(archiver
-        main.cpp
+        archiver.cpp
+        archiver.h
         argumentsparser.cpp
         argumentsparser.h
-        streamwrapper.cpp
-        streamwrapper.h
-        huffmantable.cpp
-        huffmantable.h
-        encoder.cpp
-        encoder.h
-        decoder.cpp
-        decoder.h
         binarytrie.cpp
         binarytrie.h
-        archiver.h
-        archiver.cpp
-        priorityqueue.h )
+        decoder.cpp
+        decoder.h
+        encoder.cpp
+        encoder.h
+        helper.cpp
+        helper.h
+        huffmantable.cpp
+        huffmantable.h
+        main.cpp
+        priorityqueue.h
+        streamwrapper.cpp
+        streamwrapper.h
+        unarchiver.cpp
+        unarchiver.h
+        word.h )
 
 add_catch(archiver_test_all
         argumentsparser.cpp
-        streamwrapper.cpp
-        huffmantable.cpp
-        encoder.cpp
-        decoder.cpp
         binarytrie.cpp
+        decoder.cpp
+        encoder.cpp
+        huffmantable.cpp
+        streamwrapper.cpp
         tests/test_all.cpp)
-
-
-add_catch(archiver_test_argumentsparser
-        argumentsparser.cpp
-        tests/test_argumentsparser.cpp)

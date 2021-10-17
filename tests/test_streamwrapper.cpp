@@ -1,8 +1,9 @@
 #include <catch.hpp>
 
-#include "streamwrapper.h"
-
 #include <sstream>
+#include <vector>
+
+#include "streamwrapper.h"
 
 std::vector<std::pair<std::vector<char>, size_t>> test = {
     {{0}, 1},

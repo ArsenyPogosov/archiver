@@ -1,5 +1,8 @@
 #include "decoder.h"
 
+#include <iostream>
+#include <string>
+
 Decoder::Decoder() : in_(nullptr) {
 	is_done_ = true;
 }

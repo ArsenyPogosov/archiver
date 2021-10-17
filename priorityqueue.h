@@ -1,7 +1,41 @@
 #pragma once
 
+#include <exception>
+
 template <typename T, typename comp = std::less<T>>
 class PriorityQueue {
+public:
+	T Top() const {
+		if (content_.empty()) {
+			throw std::out_of_range("Trying to Top from empty PriorityQueue");
+		}
+
+		return content_[0];
+	}
+
+	void Pop() {
+		if (content_.empty()) {
+			throw std::out_of_range("Trying to Pop from empty PriorityQueue");
+		}
+
+		content_[0] = content_.back();
+		content_.pop_back();
+		MoveDown(0);
+	}
+
+	void Push(const T &to_push) {
+		content_.push_back(to_push);
+		MoveUp(content_.size() - 1);
+	}
+
+	[[nodiscard]] size_t Size() const {
+		return content_.size();
+	}
+
+	[[nodiscard]] bool Empty() const {
+		return content_.empty();
+	}
+
 private:
     std::vector<T> content_;
 	void MoveUp(size_t i) {
@@ -25,37 +59,5 @@ private:
 				break;
 			}
 		}
-	}
-
-public:
-	T Top() {
-		if (content_.empty()) {
-			throw std::out_of_range("Trying to Top from empty PriorityQueue");
-		}
-
-		return content_[0];
-	}
-
-	void Pop() {
-		if (content_.empty()) {
-			throw std::out_of_range("Trying to Pop from empty PriorityQueue");
-		}
-
-		content_[0] = content_.back();
-		content_.pop_back();
-		MoveDown(0);
-	}
-
-	void Push(const T &to_push) {
-		content_.push_back(to_push);
-		MoveUp(content_.size() - 1);
-	}
-
-	size_t Size() {
-		return content_.size();
-	}
-
-	bool Empty() {
-		return content_.empty();
 	}
 };

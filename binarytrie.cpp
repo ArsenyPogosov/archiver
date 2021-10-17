@@ -1,5 +1,7 @@
 #include "binarytrie.h"
 
+#include "word.h"
+
 Node::Node(): links_{nullptr, nullptr} {
 	word_ = BinaryTrie::NOT_TERMINAL_;
 }

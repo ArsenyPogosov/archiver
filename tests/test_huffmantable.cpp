@@ -1,5 +1,7 @@
 #include <catch.hpp>
 
+#include <vector>
+
 #include "huffmantable.h"
 
 TEST_CASE("Create from sizes") {
