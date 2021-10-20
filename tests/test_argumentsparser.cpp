@@ -8,7 +8,7 @@
 #include "argumentsparser.h"
 
 TEST_CASE("ArgumentsParser") {
-	ArgumentParser parser;
+	ArgumentsParser parser;
 
 	std::ostringstream out;
 	parser.AddPattern({"-s", "*"}, [&out](const std::vector<std::string>& args) {

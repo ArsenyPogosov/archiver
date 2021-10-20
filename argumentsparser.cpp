@@ -3,21 +3,21 @@
 #include "string"
 #include "vector"
 
-void ArgumentParser::AddPattern(const std::vector<std::string> &pattern_template, const Action &action) {
+void ArgumentsParser::AddPattern(const std::vector<std::string> &pattern_template, const Action &action) {
 	patterns_.emplace_back(pattern_template, action);
 }
 
-ArgumentParser::ArgumentParser(): patterns_(), default_([](const std::vector<std::string>&) {
+ArgumentsParser::ArgumentsParser(): patterns_(), default_([](const std::vector<std::string>&) {
 	throw ArgumentsParserException();
 }) {
 
 }
 
-void ArgumentParser::SetDefault(const Action& default_action) {
+void ArgumentsParser::SetDefault(const Action& default_action) {
 	default_ = default_action;
 }
 
-void ArgumentParser::Execute(int argc, char** argv) const {
+void ArgumentsParser::Execute(int argc, char** argv) const {
 	std::vector<std::string> arguments(argc);
 	for (int i = 0; i < argc; ++i) {
 		arguments[i] = std::string(argv[i]);
@@ -62,7 +62,7 @@ void ArgumentParser::Execute(int argc, char** argv) const {
 	default_(arguments);
 }
 
-ArgumentParser::Pattern::Pattern(const std::vector<std::string>& pattern_template, const Action &action) :
+ArgumentsParser::Pattern::Pattern(const std::vector<std::string>& pattern_template, const Action &action) :
 		pattern_template_(pattern_template), action_(action) {
 
 }

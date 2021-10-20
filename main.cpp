@@ -11,9 +11,9 @@
 
 int main(int argc, char* argv[]) {
 
-	ArgumentParser parser;
+	ArgumentsParser parser;
 
-	parser.AddPattern({"?", "-c", ".", "*"}, [](std::vector<std::string> args) {
+	parser.AddPattern({"?", "-c", ".", "*"}, [](std::vector<std::string>& args) {
 		std::string archive_name = args.front();
 		args.erase(args.begin());
 		try {
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 		}
 	});
 
-	parser.AddPattern({"?", "-d", "."}, [](std::vector<std::string> args) {
+	parser.AddPattern({"?", "-d", "."}, [](std::vector<std::string>& args) {
 		try {
 			Unarchiver::Unarchive(args[0]);
 		} catch (const std::iostream::failure &e) {
@@ -35,11 +35,11 @@ int main(int argc, char* argv[]) {
 		}
 	});
 
-	parser.AddPattern({"?", "-h"}, [](std::vector<std::string> args) {
+	parser.AddPattern({"?", "-h"}, [](std::vector<std::string>& args) {
 		Helper::Help(std::cout);
 	});
 
-	parser.SetDefault([](std::vector<std::string> args) {
+	parser.SetDefault([](std::vector<std::string>& args) {
 		Helper::Help(std::cout);
 	});
 

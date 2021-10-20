@@ -8,11 +8,11 @@ class ArgumentsParserException: public std::exception {
 
 };
 
-class ArgumentParser {
+class ArgumentsParser {
 public:
 	using Action = std::function<void(std::vector<std::string>&)>;
 
-	ArgumentParser();
+	ArgumentsParser();
 
 	void AddPattern(const std::vector<std::string> &pattern_template, const Action &action);
 
